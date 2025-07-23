@@ -1,0 +1,4 @@
+rootProject.name = "Calmify"
+include("discovery-server")
+include("api-gateway")
+include("api-gateway")
