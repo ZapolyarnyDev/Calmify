@@ -1,9 +1,26 @@
 server:
   port: 8096
 
+spring:
+  datasource:
+    url: ${AUTH_SERVICE_DATASOURCE_URL}
+    username: ${AUTH_SERVICE_DATASOURCE_USERNAME}
+    password: ${AUTH_SERVICE_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
     fetch-registry: true
     register-with-eureka: true
+
+secrets:
+  jwt:
+    private-key-base64: ${JWT_PRIVATE_KEY_BASE64}
+    public-key-base64: ${JWT_PUBLIC_KEY_BASE64}
