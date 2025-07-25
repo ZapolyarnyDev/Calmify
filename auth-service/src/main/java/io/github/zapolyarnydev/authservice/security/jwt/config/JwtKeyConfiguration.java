@@ -1,9 +1,6 @@
-package io.github.zapolyarnydev.authservice.security.jwt;
+package io.github.zapolyarnydev.authservice.security.jwt.config;
 
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import org.bouncycastle.crypto.Signer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.authservice.security.jwt;
+package io.github.zapolyarnydev.authservice.security.jwt.config;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

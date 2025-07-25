@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.authservice.security.jwt;
 
+import io.github.zapolyarnydev.authservice.security.jwt.config.JwtProperties;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -63,12 +64,25 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public JwtValidationResult validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(publicKey).build().parseClaimsJws(token);
-            return true;
+            Jwts.parser()
+                    .setSigningKey(publicKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return new JwtValidationResult(JwtValidationStatus.VALIDATED, "Token has been successfully validated");
+        } catch (ExpiredJwtException e) {
+            return new JwtValidationResult(JwtValidationStatus.EXPIRED, "Token has expired");
+        } catch (SignatureException e) {
+            return new JwtValidationResult(JwtValidationStatus.WRONG_SIGNATURE, "Token has wrong signature");
+        } catch (MalformedJwtException e) {
+            return new JwtValidationResult(JwtValidationStatus.MALFORMED, "Тoken has wrong format");
+        } catch (UnsupportedJwtException e) {
+            return new JwtValidationResult(JwtValidationStatus.MALFORMED, "Token type doesn't support");
+        } catch (IllegalArgumentException e) {
+            return new JwtValidationResult(JwtValidationStatus.MALFORMED, "Wrong token argument");
         } catch (Exception e) {
-            return false;
+            return new JwtValidationResult(JwtValidationStatus.MALFORMED, "Unknown error");
         }
     }
 
