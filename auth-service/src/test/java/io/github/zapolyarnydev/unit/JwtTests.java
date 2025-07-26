@@ -18,7 +18,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = AuthServiceApplication.class)
+@SpringBootTest(classes = AuthServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("unit-tests")
 @Tag("unit")
 @DisplayName("Работа с JWT токенами")
