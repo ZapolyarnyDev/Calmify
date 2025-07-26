@@ -38,6 +38,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Make gradlew executable
         run: chmod +x gradlew
 
       - name: Run unit tests
