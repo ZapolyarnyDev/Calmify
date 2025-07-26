@@ -1,0 +1,52 @@
+name: Unit tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  unit_tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+
+    env:
+      JWT_PRIVATE_KEY_BASE64: ${{ secrets.JWT_PRIVATE_KEY_BASE64 }}
+      JWT_PUBLIC_KEY_BASE64: ${{ secrets.JWT_PUBLIC_KEY_BASE64 }}
+      AUTH_SERVICE_DATASOURCE_URL: ${{ secrets.AUTH_SERVICE_DATASOURCE_URL }}
+      AUTH_SERVICE_DATASOURCE_USERNAME: ${{ secrets.AUTH_SERVICE_DATASOURCE_USERNAME }}
+      AUTH_SERVICE_DATASOURCE_PASSWORD: ${{ secrets.AUTH_SERVICE_DATASOURCE_PASSWORD }}
+
+    steps:
+      - name: Checkout app code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+
+      - name: Run gradle cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+        run: chmod +x gradlew
+
+      - name: Run unit tests
+        run: ./gradlew unitTestAll
+        continue-on-error: true
+
+      - name: Upload HTML reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-test-report
+          path: '**/build/reports/tests/unitTest/**'
