@@ -40,5 +40,9 @@ public class AuthUser {
     @PrePersist
     public void prePersist(){
         this.registeredAt = Instant.now();
+
+        if(this.authRole == null) {
+            this.authRole = AuthRole.USER;
+        }
     }
 }
