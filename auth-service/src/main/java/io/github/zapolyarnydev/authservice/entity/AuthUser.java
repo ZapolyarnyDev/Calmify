@@ -28,6 +28,10 @@ public class AuthUser {
     @Column(nullable = false, updatable = false)
     private Instant registeredAt;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private AuthRole authRole;
+
     public AuthUser(String email, String password) {
         this.email = email;
         this.password = password;
