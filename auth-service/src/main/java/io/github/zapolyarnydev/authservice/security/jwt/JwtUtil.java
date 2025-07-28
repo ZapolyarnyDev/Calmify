@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.authservice.security.jwt;
 
+import io.github.zapolyarnydev.authservice.entity.AuthUser;
 import io.github.zapolyarnydev.authservice.security.jwt.config.JwtProperties;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -19,45 +20,32 @@ public class JwtUtil {
     private final PrivateKey privateKey;
     private final PublicKey publicKey;
 
-    public String generateAccessToken(String email) {
+    public String generateAccessToken(AuthUser authUser) {
+        String email = authUser.getEmail();
+        String role = authUser.getAuthRole().name();
+
         return Jwts.builder()
                 .subject(email)
                 .id(UUID.randomUUID().toString())
                 .claim("type", "access")
+                .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(jwtProperties.getAccessTokenExpiration())
                 .signWith(privateKey, Jwts.SIG.RS256)
                 .compact();
     }
 
-    /**
-     * Метод обновления токена доступа (access token) при помощи токена обновления (refresh token)
-     *
-     * @param refreshToken токен из cookie-файлов
-     * @return новый токена доступа (access token)
-     * */
-    public String refreshToken(String refreshToken)
-            throws IllegalArgumentException, ExpiredJwtException, MalformedJwtException {
-        var claims = Jwts.parser()
-                .setSigningKey(publicKey)
-                .build()
-                .parseClaimsJws(refreshToken)
-                .getBody();
 
-        Object type = claims.get("type");
-        if (type == null || !type.equals("refresh")) {
-            throw new IllegalArgumentException("Invalid token type");
-        }
 
-        var subject = claims.getSubject();
-        return generateAccessToken(subject);
-    }
+    public String generateRefreshToken(AuthUser authUser) {
+        String email = authUser.getEmail();
+        String role = authUser.getAuthRole().name();
 
-    public String generateRefreshToken(String email) {
         return Jwts.builder()
                 .subject(email)
                 .id(UUID.randomUUID().toString())
                 .claim("type", "refresh")
+                .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(jwtProperties.getRefreshTokenExpiration())
                 .signWith(privateKey, Jwts.SIG.RS256)

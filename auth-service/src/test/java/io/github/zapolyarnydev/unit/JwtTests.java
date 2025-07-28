@@ -1,19 +1,25 @@
 package io.github.zapolyarnydev.unit;
 
 import io.github.zapolyarnydev.authservice.AuthServiceApplication;
+import io.github.zapolyarnydev.authservice.entity.AuthRole;
+import io.github.zapolyarnydev.authservice.entity.AuthUser;
+import io.github.zapolyarnydev.authservice.repository.AuthUserRepository;
 import io.github.zapolyarnydev.authservice.security.jwt.JwtUtil;
 import io.github.zapolyarnydev.authservice.security.jwt.JwtValidationStatus;
 import io.github.zapolyarnydev.config.TestsEnvLoader;
+import io.github.zapolyarnydev.unit.config.JwtTestsConfiguration;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.File;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,9 +28,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("unit-tests")
 @Tag("unit")
 @DisplayName("Работа с JWT токенами")
+@ExtendWith(MockitoExtension.class)
+@Import(JwtTestsConfiguration.class)
 public class JwtTests {
 
     private static Logger logger;
+
+    @Autowired
+    private AuthUserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @BeforeAll
     public static void loadEnv() {
@@ -36,14 +50,15 @@ public class JwtTests {
         logger = LoggerFactory.getLogger(JwtTests.class);
     }
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
     @ParameterizedTest(name = "Сохранение субьекта({index}) - введёный email ({0}) должен корректно сохраниться в refresh токене")
     @DisplayName("Сохранение субьекта данных в refresh токене")
     @ValueSource(strings = {"example@email.com", "supermail@mail.net", "newemail@mail.com", "s@gl.com"})
-    public void shouldSaveSubjectInRefreshTokenAndParseIt(String email){
-        String token = jwtUtil.generateRefreshToken(email);
+    public void shouldSaveDataInRefreshTokenAndParseIt(String email){
+        var user = new AuthUser();
+        user.setEmail(email);
+        user.setAuthRole(AuthRole.USER);
+
+        String token = jwtUtil.generateRefreshToken(user);
         var claims = jwtUtil.getClaims(token).getBody();
 
         assertEquals(email, claims.getSubject(), "Извлечённый email отличается от введённого");
@@ -51,13 +66,20 @@ public class JwtTests {
 
         assertEquals("refresh", claims.get("type"), "Токен не имеет тип \"refresh\"");
         logger.info("Проверка типа токена верна! Сгенерированный токен типа '{}' ", claims.get("type"));
+
+        assertEquals("USER", claims.get("role"), "Токен не сохранил роль \"ROLE\"");
+        logger.info("Проверка сохранённой роли пройдена! Роль: '{}' ", claims.get("role"));
     }
 
     @ParameterizedTest(name = "Сохранение субьекта({index}) - введёный email ({0}) должен корректно сохраниться в access токене")
     @DisplayName("Сохранение субьекта данных в access токене")
     @ValueSource(strings = {"example@email.com", "supermail@mail.net", "newemail@mail.com", "s@gl.com"})
-    public void shouldSaveSubjectInAccessTokenAndParseIt(String email){
-        String token = jwtUtil.generateAccessToken(email);
+    public void shouldSaveDataInAccessTokenAndParseIt(String email){
+        var user = new AuthUser();
+        user.setEmail(email);
+        user.setAuthRole(AuthRole.USER);
+
+        String token = jwtUtil.generateAccessToken(user);
         var claims = jwtUtil.getClaims(token).getBody();
 
         assertEquals(email, claims.getSubject(), "Извлечённый email отличается от введённого");
@@ -65,22 +87,9 @@ public class JwtTests {
 
         assertEquals("access", claims.get("type"), "Токен не имеет тип \"access\"");
         logger.info("Проверка типа токена верна! Сгенерированный токен типа '{}' ", claims.get("type"));
-    }
 
-    @ParameterizedTest(name = "Восстановление access токена({index}) - введёный email ({0}) должен корректно сохраниться при полчении access токена через восстановление")
-    @DisplayName("Восстановление access токена")
-    @ValueSource(strings = {"example@email.com", "supermail@mail.net", "newemail@mail.com", "s@gl.com"})
-    public void shouldRefreshAccessTokenFromRefreshToken(String email){
-        String refreshToken = jwtUtil.generateRefreshToken(email);
-
-        String accessToken = jwtUtil.refreshToken(refreshToken);
-        var claims = jwtUtil.getClaims(accessToken).getBody();
-
-        assertEquals(email, claims.getSubject(), "Извлечённый email отличается от введённого");
-        logger.info("Проверка email '{}' прошла успешно, извлечённые данные: {}", email, claims.getSubject());
-
-        assertEquals("access", claims.get("type"), "Токен не имеет тип \"access\"");
-        logger.info("Проверка типа токена верна! Сгенерированный токен типа '{}' ", claims.get("type"));
+        assertEquals("USER", claims.get("role"), "Токен не сохранил роль \"ROLE\"");
+        logger.info("Проверка сохранённой роли пройдена! Роль: '{}' ", claims.get("role"));
     }
 
     @ParameterizedTest(name = "Работа с некорректным токеном({index}) - введённый токен ({0}) не должен быть принят")
@@ -92,20 +101,14 @@ public class JwtTests {
         logger.info("Тест успешен. Некорректный токен не был принят");
     }
 
-    @ParameterizedTest(name = "Восстановление access токена({index}) - использование токена с неверным типом должно выбросить исключение")
-    @DisplayName("Использование токена неверного типа для восстановления")
-    @ValueSource(strings = {"example@email.com", "supermail@mail.net", "newemail@mail.com", "s@gl.com"})
-    public void shouldThrowExceptionWhenRefreshAccessToken(String email){
-        String accessToken = jwtUtil.generateAccessToken(email);
-
-        assertThrows(IllegalArgumentException.class, () -> jwtUtil.refreshToken(accessToken));
-        logger.info("Исключение на попытку восстановить токен используя неверный тип токена выброшено!");
-    }
-
     @Test
     @DisplayName("Дата создания токена должна быть корректной")
     public void shouldTokenCreatedInCorrectDate() {
-        String token = jwtUtil.generateRefreshToken("examplemail");
+        var user = new AuthUser();
+        user.setEmail("examplemail");
+        user.setAuthRole(AuthRole.USER);
+
+        String token = jwtUtil.generateRefreshToken(user);
         Date issuedAt = jwtUtil.getClaims(token).getBody().getIssuedAt();
         Date now = new Date();
 
