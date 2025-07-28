@@ -1,7 +1,11 @@
 package io.github.zapolyarnydev.authservice.security.jwt;
 
 import io.github.zapolyarnydev.authservice.entity.AuthUser;
+import io.github.zapolyarnydev.authservice.security.jwt.claims.ClaimType;
+import io.github.zapolyarnydev.authservice.security.jwt.claims.JwtClaim;
 import io.github.zapolyarnydev.authservice.security.jwt.config.JwtProperties;
+import io.github.zapolyarnydev.authservice.security.jwt.validation.JwtValidationResult;
+import io.github.zapolyarnydev.authservice.security.jwt.validation.JwtValidationStatus;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,8 +31,8 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(email)
                 .id(UUID.randomUUID().toString())
-                .claim("type", "access")
-                .claim("role", role)
+                .claim(JwtClaim.TYPE.getName(), ClaimType.ACCESS.getName())
+                .claim(JwtClaim.ROLE.getName(), role)
                 .issuedAt(new Date())
                 .expiration(jwtProperties.getAccessTokenExpiration())
                 .signWith(privateKey, Jwts.SIG.RS256)
@@ -44,8 +48,8 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(email)
                 .id(UUID.randomUUID().toString())
-                .claim("type", "refresh")
-                .claim("role", role)
+                .claim(JwtClaim.TYPE.getName(), ClaimType.REFRESH.getName())
+                .claim(JwtClaim.ROLE.getName(), role)
                 .issuedAt(new Date())
                 .expiration(jwtProperties.getRefreshTokenExpiration())
                 .signWith(privateKey, Jwts.SIG.RS256)

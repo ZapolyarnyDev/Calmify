@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.authservice.security.jwt;
+package io.github.zapolyarnydev.authservice.security.jwt.validation;
 
 public enum JwtValidationStatus {
 
