@@ -59,7 +59,7 @@ public class JwtTests {
         user.setAuthRole(AuthRole.USER);
 
         String token = jwtUtil.generateRefreshToken(user);
-        var claims = jwtUtil.getClaims(token).getBody();
+        var claims = jwtUtil.getJwsClaims(token).getBody();
 
         assertEquals(email, claims.getSubject(), "Извлечённый email отличается от введённого");
         logger.info("Проверка email '{}' прошла успешно, извлечённые данные: {}", email, claims.getSubject());
@@ -80,7 +80,7 @@ public class JwtTests {
         user.setAuthRole(AuthRole.USER);
 
         String token = jwtUtil.generateAccessToken(user);
-        var claims = jwtUtil.getClaims(token).getBody();
+        var claims = jwtUtil.getJwsClaims(token).getBody();
 
         assertEquals(email, claims.getSubject(), "Извлечённый email отличается от введённого");
         logger.info("Проверка email '{}' прошла успешно, извлечённые данные: {}", email, claims.getSubject());
@@ -109,7 +109,7 @@ public class JwtTests {
         user.setAuthRole(AuthRole.USER);
 
         String token = jwtUtil.generateRefreshToken(user);
-        Date issuedAt = jwtUtil.getClaims(token).getBody().getIssuedAt();
+        Date issuedAt = jwtUtil.getJwsClaims(token).getBody().getIssuedAt();
         Date now = new Date();
 
         long deltaMillis = Math.abs(now.getTime() - issuedAt.getTime());

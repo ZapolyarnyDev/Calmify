@@ -17,7 +17,7 @@ public class RefreshTokenService {
 
     public String refreshToken(String refreshToken)
             throws IllegalArgumentException, ExpiredJwtException, MalformedJwtException {
-        var claims = jwtUtil.getClaims(refreshToken).getBody();
+        var claims = jwtUtil.getJwsClaims(refreshToken).getBody();
 
         Object type = claims.get("type");
         if (type == null || !type.equals("refresh")) {

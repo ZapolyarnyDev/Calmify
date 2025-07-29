@@ -88,7 +88,7 @@ public class JwtUtil {
 
     }
 
-    public Jws<Claims> getClaims(String token) {
+    public Jws<Claims> getJwsClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(publicKey)
                 .build()
