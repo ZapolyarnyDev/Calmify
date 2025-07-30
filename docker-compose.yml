@@ -1,0 +1,13 @@
+services:
+  discovery-server:
+    build:
+      context: ./discovery-server
+      dockerfile: ./Dockerfile
+      args:
+        SERVICE_MODULE: discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_ACTIVE_PROFILE=dev-docker
+      - JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseG1GC
