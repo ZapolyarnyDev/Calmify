@@ -1,0 +1,13 @@
+server:
+  port: 8095
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVER_ZONE}
+    fetch-registry: true
+    register-with-eureka: true
+
+security:
+  jwt:
+    public-key-base64: ${JWT_PUBLIC_KEY_BASE64}

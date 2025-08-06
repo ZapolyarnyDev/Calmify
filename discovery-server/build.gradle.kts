@@ -28,8 +28,7 @@ dependencyManagement {
 }
 
 tasks.bootJar {
-    archiveBaseName.set("discovery-server")
-    archiveVersion.set("1.0")
+    archiveFileName.set("app.jar")
 }
 
 tasks.test {

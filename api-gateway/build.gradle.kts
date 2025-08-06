@@ -37,8 +37,7 @@ dependencyManagement {
 }
 
 tasks.bootJar {
-    archiveBaseName.set("api-gateway")
-    archiveVersion.set("1.0")
+    archiveFileName.set("app.jar")
 }
 
 

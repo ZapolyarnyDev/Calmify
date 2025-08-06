@@ -1,13 +1,161 @@
 services:
   discovery-server:
     build:
-      context: ./discovery-server
+      context: .
       dockerfile: ./Dockerfile
       args:
         SERVICE_MODULE: discovery-server
+        EXPOSE_PORT: 8761
     container_name: discovery-server
     ports:
       - "8761:8761"
+    networks:
+      - calmify-app-network
     environment:
-      - SPRING_ACTIVE_PROFILE=dev-docker
-      - JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseG1GC
+      SPRING_ACTIVE_PROFILE: dev-docker
+      JAVA_OPTS: -Xms512m -Xmx1024m -XX:+UseG1GC
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        SERVICE_MODULE: api-gateway
+        EXPOSE_PORT: 8095
+    container_name: api-gateway
+    depends_on:
+      - discovery-server
+    ports:
+      - "8095:8095"
+    networks:
+      - calmify-app-network
+    environment:
+      SPRING_ACTIVE_PROFILE: dev-docker
+      JWT_PUBLIC_KEY_BASE64: ${JWT_PUBLIC_BASE64}
+      JAVA_OPTS: -Xms512m -Xmx1024m -XX:+UseG1GC
+      DISCOVERY_SERVER_ZONE: ${DISCOVERY_SERVER_ZONE}
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        SERVICE_MODULE: auth-service
+        EXPOSE_PORT: 8096
+    container_name: auth-service
+    depends_on:
+      - discovery-server
+      - kafka-server-1
+      - auth-database
+    ports:
+      - "8096:8096"
+    networks:
+      - calmify-app-network
+    environment:
+      AUTH_DB_URL: jdbc:postgresql://auth-database:5432/${AUTH_DB_NAME}
+      AUTH_DB_USERNAME: ${AUTH_DB_USERNAME}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD}
+      SPRING_ACTIVE_PROFILE: dev-docker
+      JWT_PUBLIC_KEY_BASE64: ${JWT_PUBLIC_BASE64}
+      JWT_PRIVATE_KEY_BASE64: ${JWT_PRIVATE_BASE64}
+      JAVA_OPTS: -Xms512m -Xmx1024m -XX:+UseG1GC
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      DISCOVERY_SERVER_ZONE: ${DISCOVERY_SERVER_ZONE}
+
+  user-service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        SERVICE_MODULE: user-service
+        EXPOSE_PORT: 8097
+    container_name: user-service
+    depends_on:
+      - discovery-server
+      - kafka-server-1
+      - user-database
+    ports:
+      - "8097:8097"
+    networks:
+      - calmify-app-network
+    environment:
+      USER_DB_URL: jdbc:postgresql://user-database:5432/${USER_DB_NAME}
+      USER_DB_USERNAME: ${USER_DB_USERNAME}
+      USER_DB_PASSWORD: ${USER_DB_PASSWORD}
+      SPRING_ACTIVE_PROFILE: dev-docker
+      JAVA_OPTS: -Xms512m -Xmx1024m -XX:+UseG1GC
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      DISCOVERY_SERVER_ZONE: ${DISCOVERY_SERVER_ZONE}
+
+  auth-database:
+    image: postgres:15
+    container_name: auth-database
+    environment:
+      POSTGRES_DB: ${AUTH_DB_NAME}
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - calmify-app-network
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+
+  user-database:
+    image: postgres:15
+    container_name: user-database
+    environment:
+      POSTGRES_DB: ${USER_DB_NAME}
+      POSTGRES_USER: ${USER_DB_USER}
+      POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    networks:
+      - calmify-app-network
+    volumes:
+      - user-data:/var/lib/postgresql/data
+
+  kafka-server-1:
+    image: bitnami/kafka:latest
+    container_name: kafka-server-1
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-server-1:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-server-1:9092,PLAINTEXT_HOST://kafka-server-1:29092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
+      - KAFKA_KRAFT_CLUSTER_ID=3I3sm3POR7O8oczdFPa1UA
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    networks:
+      - kafka-network
+      - calmify-app-network
+
+  ui-kafka:
+    container_name: ui-kafka
+    image: provectuslabs/kafka-ui:v0.4.0
+    depends_on:
+      - kafka-server-1
+    ports:
+      - "9149:9149"
+    environment:
+      - SERVER_PORT=9149
+      - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka-server-1:9092
+      - KAFKA_CLUSTERS_0_NAME=kraft
+    networks:
+      - kafka-network
+
+volumes:
+  auth-data:
+  user-data:
+
+networks:
+  calmify-app-network:
+    driver: bridge
+  kafka-network:
+    driver: bridge

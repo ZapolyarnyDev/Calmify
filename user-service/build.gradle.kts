@@ -16,10 +16,13 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
+    implementation(project(":calmify-commons"))
+
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
 
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.apache.avro:avro:1.11.4")
 
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -36,8 +39,7 @@ dependencyManagement {
 }
 
 tasks.bootJar {
-    archiveBaseName.set("user-service")
-    archiveVersion.set("1.0")
+    archiveFileName.set("app.jar")
 }
 
 tasks.test {

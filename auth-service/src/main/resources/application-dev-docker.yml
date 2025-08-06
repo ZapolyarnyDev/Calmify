@@ -1,0 +1,43 @@
+server:
+  port: 8096
+
+spring:
+  datasource:
+    url: ${AUTH_DB_URL}
+    username: ${AUTH_DB_USERNAME}
+    password: ${AUTH_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS_ADDRESS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.github.zapolyarnydev.commons.avro.AvroSerializer
+      acks: all
+      retries: 3
+    consumer:
+      group-id: auth-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.github.zapolyarnydev.commons.avro.AvroDeserializer
+    properties:
+      schema.registry.url: http://localhost:8081
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVER_ZONE}
+    fetch-registry: false
+    register-with-eureka: true
+
+security:
+  jwt:
+    private-key-base64: ${JWT_PRIVATE_KEY_BASE64}
+    public-key-base64: ${JWT_PUBLIC_KEY_BASE64}
+    access-token-expiration-minutes: 15
+    refresh-token-expiration-days: 7

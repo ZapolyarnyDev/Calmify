@@ -1,6 +1,7 @@
-package io.github.zapolyarnydev.authservice.kafka.avro;
+package io.github.zapolyarnydev.commons.avro;
 
-import org.apache.avro.io.*;
+import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.common.serialization.Serializer;

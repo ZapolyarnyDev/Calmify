@@ -1,5 +1,8 @@
-package io.github.zapolyarnydev.authservice.kafka.avro;
-import org.apache.avro.io.*;
+package io.github.zapolyarnydev.commons.avro;
+
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.common.serialization.Deserializer;

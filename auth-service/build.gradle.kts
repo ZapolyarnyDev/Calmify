@@ -51,8 +51,7 @@ dependencyManagement {
 }
 
 tasks.bootJar {
-    archiveBaseName.set("auth-service")
-    archiveVersion.set("1.0")
+    archiveFileName.set("app.jar")
 }
 
 
