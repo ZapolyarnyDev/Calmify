@@ -1,13 +1,13 @@
 package io.github.zapolyarnydev.authservice.api.v0;
 
-import io.github.zapolyarnydev.authservice.api.common.ApiResponse;
-import io.github.zapolyarnydev.authservice.api.common.ApiStatus;
 import io.github.zapolyarnydev.authservice.dto.request.LoginRequestDTO;
 import io.github.zapolyarnydev.authservice.dto.request.RegistrationRequestDTO;
 import io.github.zapolyarnydev.authservice.dto.response.JwtResponseDTO;
 import io.github.zapolyarnydev.authservice.entity.AuthUser;
 import io.github.zapolyarnydev.authservice.security.jwt.JwtUtil;
 import io.github.zapolyarnydev.authservice.service.AuthService;
+import io.github.zapolyarnydev.commons.api.ApiResponse;
+import io.github.zapolyarnydev.commons.api.ApiStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
