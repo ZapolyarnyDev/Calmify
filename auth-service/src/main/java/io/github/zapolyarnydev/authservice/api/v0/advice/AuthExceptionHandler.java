@@ -14,19 +14,19 @@ public class AuthExceptionHandler {
 
     @ExceptionHandler(EmailAlreadyUsedException.class)
     public ResponseEntity<ApiResponse<?>> emailUsed(EmailAlreadyUsedException e) {
-        var response = new ApiResponse<>(ApiStatus.FAILURE, e.getMessage(), null);
+        var response = ApiResponse.fail(e.getMessage());
         return ResponseEntity.status(409).body(response);
     }
 
     @ExceptionHandler(EmailNotFoundException.class)
     public ResponseEntity<ApiResponse<?>> emailNotFound(EmailNotFoundException e) {
-        var response = new ApiResponse<>(ApiStatus.FAILURE, e.getMessage(), null);
+        var response = ApiResponse.fail(e.getMessage());
         return ResponseEntity.status(404).body(response);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ApiResponse<?>> invalidCredentials(InvalidCredentialsException e) {
-        var response = new ApiResponse<>(ApiStatus.FAILURE, e.getMessage(), null);
+        var response = ApiResponse.fail(e.getMessage());
         return ResponseEntity.status(409).body(response);
     }
 

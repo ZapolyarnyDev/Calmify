@@ -20,11 +20,7 @@ public class TokenController {
             @RequestParam("refreshToken") @NotBlank(message = "refresh token cannot be null") String refreshToken) {
         String accessToken = tokenService.refreshToken(refreshToken);
 
-        ApiResponse<String> apiResponse = new ApiResponse<>(
-                ApiStatus.SUCCESS,
-                "token has been updated",
-                accessToken
-        );
+        var apiResponse = ApiResponse.success("Token has been updated", accessToken);
 
         return ResponseEntity.ok(apiResponse);
     }

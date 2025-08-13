@@ -1,7 +1,7 @@
 package io.github.zapolyarnydev.authservice.api.v0.advice;
 
-import io.github.zapolyarnydev.authservice.api.common.ApiResponse;
-import io.github.zapolyarnydev.authservice.api.common.ApiStatus;
+import io.github.zapolyarnydev.commons.api.ApiResponse;
+import io.github.zapolyarnydev.commons.api.ApiStatus;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.ResponseEntity;
@@ -13,19 +13,19 @@ public class TokenExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<?>> illegalArgument(IllegalArgumentException e) {
-        var response = new ApiResponse<>(ApiStatus.FAILURE, e.getMessage(), null);
+        var response = ApiResponse.fail(e.getMessage());
         return ResponseEntity.status(400).body(response);
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ApiResponse<?>> expiredToken(ExpiredJwtException ignored) {
-        var response = new ApiResponse<>(ApiStatus.FAILURE, "Token expired", null);
+        var response = ApiResponse.fail("Token expired");
         return ResponseEntity.status(401).body(response);
     }
 
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<ApiResponse<?>> malformedToken(MalformedJwtException ignored) {
-        var response = new ApiResponse<>(ApiStatus.FAILURE, "Malformed token", null);
+        var response = ApiResponse.fail("Malformed token");
         return ResponseEntity.status(400).body(response);
     }
 }

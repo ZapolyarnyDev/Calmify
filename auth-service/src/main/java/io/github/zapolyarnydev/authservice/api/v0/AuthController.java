@@ -38,10 +38,7 @@ public class AuthController {
 
         var responseDTO = new JwtResponseDTO(accessToken, refreshToken);
 
-        ApiResponse<JwtResponseDTO> apiResponse = new ApiResponse<>(
-                ApiStatus.SUCCESS,
-                "Registration completed successfully",
-                responseDTO);
+        var apiResponse = ApiResponse.success("Registration completed successfully", responseDTO);
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -58,10 +55,7 @@ public class AuthController {
 
         var responseDTO = new JwtResponseDTO(accessToken, refreshToken);
 
-        ApiResponse<JwtResponseDTO> apiResponse = new ApiResponse<>(
-                ApiStatus.SUCCESS,
-                "Log in completed successfully",
-                responseDTO);
+        var apiResponse = ApiResponse.success("Log in completed successfully", responseDTO);
 
         return ResponseEntity.ok(apiResponse);
     }
