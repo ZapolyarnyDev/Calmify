@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.authservice.api.v1;
+package io.github.zapolyarnydev.authservice.api.v0;
 
 import io.github.zapolyarnydev.authservice.api.common.ApiResponse;
 import io.github.zapolyarnydev.authservice.api.common.ApiStatus;
