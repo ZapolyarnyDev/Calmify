@@ -6,6 +6,8 @@ services:
       args:
         SERVICE_MODULE: discovery-server
         EXPOSE_PORT: 8761
+        VERSION: ${DISCOVERY_SERVER_VERSION}
+    image: discovery-server:${DISCOVERY_SERVER_VERSION}
     container_name: discovery-server
     ports:
       - "8761:8761"
@@ -22,6 +24,8 @@ services:
       args:
         SERVICE_MODULE: api-gateway
         EXPOSE_PORT: 8095
+        VERSION: ${API_GATEWAY_VERSION}
+    image: api-gateway:${API_GATEWAY_VERSION}
     container_name: api-gateway
     depends_on:
       - discovery-server
@@ -42,6 +46,8 @@ services:
       args:
         SERVICE_MODULE: auth-service
         EXPOSE_PORT: 8096
+        VERSION: ${AUTH_SERVICE_VERSION}
+    image: auth-service:${AUTH_SERVICE_VERSION}
     container_name: auth-service
     depends_on:
       - discovery-server
@@ -69,6 +75,8 @@ services:
       args:
         SERVICE_MODULE: user-service
         EXPOSE_PORT: 8097
+        VERSION: ${USER_SERVICE_VERSION}
+    image: user-service:${USER_SERVICE_VERSION}
     container_name: user-service
     depends_on:
       - discovery-server
