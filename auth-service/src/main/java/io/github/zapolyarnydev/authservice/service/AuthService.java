@@ -32,7 +32,7 @@ public class AuthService {
         String hashedPassword = passwordEncoder.encode(password);
         var authUser = new AuthUser(email, hashedPassword);
 
-        userRepository.save(authUser);
+        authUser = userRepository.saveAndFlush(authUser);
 
         var event = new UserCreatedEvent(email, authUser.getRegisteredAt());
         kafkaTemplate.send("users.created", event);
