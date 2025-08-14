@@ -3,6 +3,7 @@ FROM gradle:8.12.0-jdk21 AS builder
 WORKDIR /build
 
 ARG SERVICE_MODULE
+ENV SERVICE_MODULE ${SERVICE_MODULE}
 
 COPY build.gradle.kts settings.gradle.kts ./
 COPY gradle ./gradle
