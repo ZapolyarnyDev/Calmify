@@ -3,6 +3,7 @@ package io.github.zapolyarnydev.authservice.kafka;
 import io.github.zapolyarnydev.commons.avro.AvroSerializer;
 import io.github.zapolyarnydev.commons.events.UserCreatedEvent;
 import lombok.RequiredArgsConstructor;
+import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -31,7 +32,7 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ProducerFactory<String, UserCreatedEvent> userCreatedProducerFactory() {
+    public ProducerFactory<String, SpecificRecord> userCreatedProducerFactory() {
         var configProperties = new HashMap<>(kafkaProperties.buildProducerProperties());
 
         configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -41,7 +42,7 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, UserCreatedEvent> userCreatedKafkaTemplate() {
+    public KafkaTemplate<String, SpecificRecord> userCreatedKafkaTemplate() {
         return new KafkaTemplate<>(userCreatedProducerFactory());
     }
 }
