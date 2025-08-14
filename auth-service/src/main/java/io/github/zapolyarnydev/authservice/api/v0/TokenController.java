@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/token")
+@RequestMapping("/v0/token")
 @RequiredArgsConstructor
 public class TokenController {
 
