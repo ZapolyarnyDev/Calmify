@@ -1,15 +1,11 @@
 spring:
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
       routes:
         - id: auth-service
           uri: lb://auth-service
           predicates:
-            - Path=/api/v0/auth/**
-            - Path=/api/v0/token/**
+            - Path=/api/v0/auth/**, /api/v0/token/**
           filters:
             - StripPrefix=1
 
