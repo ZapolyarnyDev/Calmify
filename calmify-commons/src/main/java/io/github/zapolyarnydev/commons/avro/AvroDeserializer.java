@@ -23,6 +23,8 @@ public class AvroDeserializer<T extends SpecificRecord> implements Deserializer<
 
     @Override
     public T deserialize(String topic, byte[] data) {
+        if (data == null) return null;
+
         try {
             DatumReader<T> reader = new SpecificDatumReader<>(targetType);
             BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(data, null);
