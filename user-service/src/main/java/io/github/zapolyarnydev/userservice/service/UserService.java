@@ -21,7 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UserEntity createUser(String email, Instant registeredAt) {
+    public UserEntity createUser(String email, Instant registeredAt) throws EmailAlreadyUsedException {
         if(userRepository.existsByEmail(email)) {
             throw new EmailAlreadyUsedException(email);
         }
