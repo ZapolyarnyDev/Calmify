@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "calmify_users")
 @AllArgsConstructor
 public class UserEntity {
@@ -23,24 +22,29 @@ public class UserEntity {
     private String email;
 
     @Column(nullable = false)
+    @Setter
     private String displayName;
 
     @Column(unique = true, nullable = false)
+    @Setter
     private String handle;
 
     @Column(columnDefinition = "TEXT")
+    @Setter
     private String description;
 
     @Column(nullable = false)
+    @Setter
     private boolean showActivity = true;
 
     @Column(nullable = false)
+    @Setter
     private Instant lastSeenAt;
 
     @Column(nullable = false, updatable = false)
     private Instant registeredAt;
 
-    public UserEntity(String email) {
+    public UserEntity(String email, Instant registeredAt) {
         this.email = email;
         this.lastSeenAt = Instant.now();
     }
