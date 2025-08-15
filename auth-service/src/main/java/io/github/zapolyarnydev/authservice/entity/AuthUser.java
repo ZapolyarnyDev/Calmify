@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "auth-users")
+@Table(name = "auth_users")
 @Getter
 @Setter
 @NoArgsConstructor
