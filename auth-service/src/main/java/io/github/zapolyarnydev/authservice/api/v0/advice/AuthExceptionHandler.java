@@ -1,9 +1,9 @@
 package io.github.zapolyarnydev.authservice.api.v0.advice;
 
-import io.github.zapolyarnydev.authservice.exception.EmailAlreadyUsedException;
 import io.github.zapolyarnydev.authservice.exception.EmailNotFoundException;
 import io.github.zapolyarnydev.authservice.exception.InvalidCredentialsException;
 import io.github.zapolyarnydev.commons.api.ApiResponse;
+import io.github.zapolyarnydev.commons.exception.EmailAlreadyUsedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
