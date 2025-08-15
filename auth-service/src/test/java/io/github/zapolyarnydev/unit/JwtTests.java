@@ -8,7 +8,10 @@ import io.github.zapolyarnydev.authservice.security.jwt.JwtUtil;
 import io.github.zapolyarnydev.authservice.security.jwt.validation.JwtValidationStatus;
 import io.github.zapolyarnydev.config.TestsEnvLoader;
 import io.github.zapolyarnydev.unit.config.JwtTestsConfiguration;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -22,7 +25,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = AuthServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("unit-tests")

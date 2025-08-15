@@ -1,7 +1,6 @@
 package io.github.zapolyarnydev.authservice.api.v0.advice;
 
 import io.github.zapolyarnydev.commons.api.ApiResponse;
-import io.github.zapolyarnydev.commons.api.ApiStatus;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;

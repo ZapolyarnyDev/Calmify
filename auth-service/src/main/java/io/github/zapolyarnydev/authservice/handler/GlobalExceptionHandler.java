@@ -1,6 +1,5 @@
 package io.github.zapolyarnydev.authservice.handler;
 
-import io.github.zapolyarnydev.authservice.exception.EmailNotFoundException;
 import io.github.zapolyarnydev.commons.api.ApiResponse;
 import io.github.zapolyarnydev.commons.exception.MissingCalmifyHeadersException;
 import org.springframework.http.HttpStatus;

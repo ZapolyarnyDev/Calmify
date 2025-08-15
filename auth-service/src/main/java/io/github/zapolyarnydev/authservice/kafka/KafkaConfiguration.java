@@ -1,7 +1,6 @@
 package io.github.zapolyarnydev.authservice.kafka;
 
 import io.github.zapolyarnydev.commons.avro.AvroSerializer;
-import io.github.zapolyarnydev.commons.events.UserCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.admin.NewTopic;

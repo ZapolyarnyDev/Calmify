@@ -1,6 +1,5 @@
 package io.github.zapolyarnydev.commons.exception;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MissingCalmifyHeadersException extends RuntimeException {

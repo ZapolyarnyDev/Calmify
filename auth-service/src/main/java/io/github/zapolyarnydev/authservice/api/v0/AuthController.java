@@ -7,7 +7,6 @@ import io.github.zapolyarnydev.authservice.entity.AuthUser;
 import io.github.zapolyarnydev.authservice.security.jwt.JwtUtil;
 import io.github.zapolyarnydev.authservice.service.AuthService;
 import io.github.zapolyarnydev.commons.api.ApiResponse;
-import io.github.zapolyarnydev.commons.api.ApiStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
