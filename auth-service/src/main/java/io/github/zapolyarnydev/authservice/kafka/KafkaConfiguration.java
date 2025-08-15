@@ -25,13 +25,13 @@ public class KafkaConfiguration {
     @Bean
     public NewTopic userCreated() {
         return TopicBuilder.name("users.created")
-                .replicas(3)
+                .replicas(1)
                 .partitions(2)
                 .build();
     }
 
     @Bean
-    public ProducerFactory<String, SpecificRecord> userCreatedProducerFactory() {
+    public ProducerFactory<String, SpecificRecord> specificRecordProducerFactory() {
         var configProperties = new HashMap<>(kafkaProperties.buildProducerProperties());
 
         configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -42,6 +42,6 @@ public class KafkaConfiguration {
 
     @Bean
     public KafkaTemplate<String, SpecificRecord> userCreatedKafkaTemplate() {
-        return new KafkaTemplate<>(userCreatedProducerFactory());
+        return new KafkaTemplate<>(specificRecordProducerFactory());
     }
 }
