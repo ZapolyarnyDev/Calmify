@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.authservice.exception;
+package io.github.zapolyarnydev.commons.exception;
 
 public class EmailAlreadyUsedException extends RuntimeException {
     public EmailAlreadyUsedException(String email) {
