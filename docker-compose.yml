@@ -56,6 +56,7 @@ services:
     ports:
       - "8096:8096"
     networks:
+      - kafka-network
       - calmify-app-network
     environment:
       AUTH_DB_URL: jdbc:postgresql://auth-database:5432/${AUTH_DB_NAME}
@@ -86,6 +87,7 @@ services:
     ports:
       - "8097:8097"
     networks:
+      - kafka-network
       - calmify-app-network
     environment:
       USER_DB_URL: jdbc:postgresql://user-database:5432/${USER_DB_NAME}
@@ -95,6 +97,7 @@ services:
       JAVA_OPTS: -Xms512m -Xmx1024m -XX:+UseG1GC
       KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
       DISCOVERY_SERVER_ZONE: ${DISCOVERY_SERVER_ZONE}
+      SCHEMA_REGISTRY_URL: ${SCHEMA_REGISTRY_URL}
 
   auth-database:
     image: postgres:15
@@ -141,9 +144,9 @@ services:
       - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
       - KAFKA_KRAFT_CLUSTER_ID=3I3sm3POR7O8oczdFPa1UA
       - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CREATE_TOPICS=_schemas:1:1
     networks:
       - kafka-network
-      - calmify-app-network
 
   schema-registry:
     image: confluentinc/cp-schema-registry:latest
@@ -159,7 +162,6 @@ services:
       SCHEMA_REGISTRY_DEBUG: "false"
       SCHEMA_REGISTRY_COMPATIBILITY_LEVEL: "BACKWARD"
     networks:
-      - calmify-app-network
       - kafka-network
 
   ui-kafka:
