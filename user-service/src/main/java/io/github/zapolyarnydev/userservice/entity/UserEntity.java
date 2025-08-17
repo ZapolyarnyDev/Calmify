@@ -3,6 +3,7 @@ package io.github.zapolyarnydev.userservice.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Getter
 @Table(name = "calmify_users")
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity {
 
     @Id
@@ -46,7 +48,7 @@ public class UserEntity {
 
     public UserEntity(String email, Instant registeredAt) {
         this.email = email;
-        this.lastSeenAt = Instant.now();
+        this.lastSeenAt = registeredAt;
     }
 
     @PrePersist

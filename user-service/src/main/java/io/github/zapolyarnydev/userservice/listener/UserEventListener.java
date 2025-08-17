@@ -20,6 +20,7 @@ public class UserEventListener {
     @KafkaListener(topics = "users.created",
     containerFactory = "specificRecordContainerFactory")
     public void onUserCreate(UserCreatedEvent event) {
+        log.info("User creation event received. Email: {}", event.getEmail());
         var email = event.getEmail();
         Instant registeredAt = event.getCreatedAt();
         try {
