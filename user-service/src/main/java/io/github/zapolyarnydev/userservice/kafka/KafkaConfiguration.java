@@ -1,21 +1,20 @@
 package io.github.zapolyarnydev.userservice.kafka;
 
-import io.github.zapolyarnydev.commons.avro.AvroDeserializer;
-import io.github.zapolyarnydev.commons.avro.AvroSerializer;
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecord;
-import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
-import org.springframework.kafka.core.*;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 
@@ -23,11 +22,10 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class KafkaConfiguration {
 
-    private final KafkaProperties kafkaProperties;
-    private final DefaultErrorHandler specificRecordErrorHandler;
+    private final KafkaTemplate<String, SpecificRecord> kafkaTemplate;
 
     @Bean
-    public NewTopic usersCreatedDLT() {
+    public org.apache.kafka.clients.admin.NewTopic usersCreatedDLT() {
         return TopicBuilder.name("users.created.dlt")
                 .partitions(2)
                 .replicas(1)
@@ -35,38 +33,34 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<String, SpecificRecord> specificRecordConsumerFactory() {
-        var configProperties = new HashMap<>(kafkaProperties.buildConsumerProperties());
-
-        configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroDeserializer.class);
-
-        return new DefaultKafkaConsumerFactory<>(configProperties);
+    public ConsumerFactory<String, SpecificRecord> specificRecordConsumerFactory(KafkaProperties kafkaProperties) {
+        var props = new HashMap<>(kafkaProperties.buildConsumerProperties());
+        props.put(org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        props.put("specific.avro.reader", true);
+        return new org.springframework.kafka.core.DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, SpecificRecord> specificRecordContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, SpecificRecord> specificRecordContainerFactory(
+            KafkaTemplate<String, SpecificRecord> kafkaTemplate,
+            ConsumerFactory<String, SpecificRecord> consumerFactory) {
+
         var factory = new ConcurrentKafkaListenerContainerFactory<String, SpecificRecord>();
-        factory.setConsumerFactory(specificRecordConsumerFactory());
-
+        factory.setConsumerFactory(consumerFactory);
         factory.setConcurrency(2);
-        factory.setCommonErrorHandler(specificRecordErrorHandler);
 
+        var errorHandler = new DefaultErrorHandler(
+                new DeadLetterPublishingRecoverer(
+                        kafkaTemplate,
+                        (record, ex) -> new TopicPartition(record.topic() + ".dlt", record.partition())
+                ),
+                new FixedBackOff(0L, 0L)
+        );
+
+        factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
 
-    @Bean
-    public ProducerFactory<String, SpecificRecord> specificRecordProducerFactory() {
-        var configProperties = new HashMap<>(kafkaProperties.buildProducerProperties());
 
-        configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, AvroSerializer.class);
-
-        return new DefaultKafkaProducerFactory<>(configProperties);
-    }
-
-    @Bean
-    public KafkaTemplate<String, SpecificRecord> userCreatedKafkaTemplate() {
-        return new KafkaTemplate<>(specificRecordProducerFactory());
-    }
 }
