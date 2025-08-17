@@ -9,6 +9,7 @@ import io.github.zapolyarnydev.commons.events.UserCreatedEvent;
 import io.github.zapolyarnydev.commons.exception.EmailAlreadyUsedException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -36,6 +38,7 @@ public class AuthService {
 
         var event = new UserCreatedEvent(email, authUser.getRegisteredAt());
         kafkaTemplate.send("users.created", event);
+        log.info("User registered successfully, event sent to kafka broker. Email: {}", email);
         return authUser;
     }
 
