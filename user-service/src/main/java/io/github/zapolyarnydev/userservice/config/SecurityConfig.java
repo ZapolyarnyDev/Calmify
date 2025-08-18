@@ -1,7 +1,7 @@
-package io.github.zapolyarnydev.authservice.config;
+package io.github.zapolyarnydev.userservice.config;
 
-import io.github.zapolyarnydev.authservice.filter.HeaderCheckFilter;
 import io.github.zapolyarnydev.commons.filter.HeaderFilterProvider;
+import io.github.zapolyarnydev.userservice.filter.HeaderCheckFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +15,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.util.List;
 
-@Configuration
-@EnableMethodSecurity
 @EnableWebSecurity
+@EnableMethodSecurity
+@Configuration
 @Slf4j
 public class SecurityConfig {
 
@@ -28,8 +28,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/v0/auth/**").permitAll()
-                                .anyRequest().authenticated())
+                        auth.anyRequest().authenticated())
                 .addFilterBefore(checkFiler, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -38,8 +37,8 @@ public class SecurityConfig {
     private HeaderFilterProvider headerFilterProvider() {
         return HeaderFilterProvider.builder()
                 .forEndpoints(
-                        List.of("/v0/token/refresh"),
-                        List.of("POST")
+                        List.of("/v0/user"),
+                        List.of("PATCH")
                 )
                 .requireHeaders(
                         List.of("Calmify-User-Email")
