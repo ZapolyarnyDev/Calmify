@@ -1,11 +1,15 @@
 package io.github.zapolyarnydev.userservice.service;
 
 import io.github.zapolyarnydev.commons.exception.EmailAlreadyUsedException;
+import io.github.zapolyarnydev.commons.exception.UserNotFoundException;
+import io.github.zapolyarnydev.userservice.dto.UpdateUserRequestDTO;
 import io.github.zapolyarnydev.userservice.entity.UserEntity;
 import io.github.zapolyarnydev.userservice.exception.HandleAlreadyTakenException;
 import io.github.zapolyarnydev.userservice.exception.IllegalHandleSizeException;
 import io.github.zapolyarnydev.userservice.exception.InvalidHandleCharactersException;
+import io.github.zapolyarnydev.userservice.mapper.UpdateRequestMapper;
 import io.github.zapolyarnydev.userservice.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final UpdateRequestMapper updateRequestMapper;
+
     @Transactional
     public UserEntity createUser(String email, Instant registeredAt) throws EmailAlreadyUsedException {
         if(userRepository.existsByEmail(email)) {
@@ -31,12 +37,24 @@ public class UserService {
         var entity = new UserEntity(email, registeredAt);
         entity.setHandle(handle);
 
-        log.debug("User created! Email: {}, Handle: {}", email, handle);
+        log.info("User created! Email: {}, Handle: {}", email, handle);
         return userRepository.save(entity);
     }
 
+    public UserEntity findUser(String email) throws EntityNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email));
+    }
+
     @Transactional
-    public void changeHandle(UserEntity userEntity, String handle) {
+    public void updateUser(UserEntity userEntity, UpdateUserRequestDTO updateUserRequest) {
+        if(updateUserRequest.handle() != null) validateHandle(updateUserRequest.handle());
+        updateRequestMapper.updateUserFromRequest(updateUserRequest, userEntity);
+        userRepository.save(userEntity);
+        log.info("User {} updated!", userEntity.getEmail());
+    }
+
+    public void validateHandle(String handle) {
         if(handle.isBlank() || handle.length() > 20) {
             throw new IllegalHandleSizeException(1, 20);
         }
@@ -46,8 +64,6 @@ public class UserService {
         else if(!handle.matches("[a-z0-9]+")){
             throw new InvalidHandleCharactersException();
         }
-        userEntity.setHandle(handle);
-        userRepository.save(userEntity);
     }
 
     private String generateHandle(String displayName) {

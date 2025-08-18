@@ -27,6 +27,11 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.apache.avro:avro:1.11.4")
 
+    implementation("org.springframework.boot:spring-boot-starter-security")
+
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
