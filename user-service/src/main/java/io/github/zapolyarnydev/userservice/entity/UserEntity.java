@@ -54,7 +54,7 @@ public class UserEntity {
     @PrePersist
     public void prePersist() {
         if(displayName == null) {
-            displayName = email.split("@")[0];
+            displayName = email.split("@")[0].substring(0, 32);
         }
         if(handle == null) {
             String base = displayName.toLowerCase().replaceAll("[^a-z0-9]", "");
