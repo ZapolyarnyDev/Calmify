@@ -8,10 +8,12 @@ import io.github.zapolyarnydev.authservice.security.jwt.validation.JwtValidation
 import io.github.zapolyarnydev.authservice.security.jwt.validation.JwtValidationStatus;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.Duration;
 import java.util.Date;
 import java.util.UUID;
 
@@ -54,6 +56,15 @@ public class JwtUtil {
                 .expiration(jwtProperties.getRefreshTokenExpiration())
                 .signWith(privateKey, Jwts.SIG.RS256)
                 .compact();
+    }
+
+    public ResponseCookie tokenToCookie(String refreshToken) {
+        return ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .maxAge(Duration.ofDays(7))
+                .sameSite("Strict")
+                .path("/v0/token/refresh")
+                .build();
     }
 
     public JwtValidationResult validateToken(String token) {

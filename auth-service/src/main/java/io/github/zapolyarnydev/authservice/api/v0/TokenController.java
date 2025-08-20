@@ -5,10 +5,7 @@ import io.github.zapolyarnydev.commons.api.ApiResponse;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v0/token")
@@ -19,7 +16,7 @@ public class TokenController {
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<String>> refresh(
-            @RequestParam("refreshToken") @NotBlank(message = "refresh token cannot be null") String refreshToken) {
+            @CookieValue("refreshToken") @NotBlank(message = "refresh token cannot be null") String refreshToken) {
         String accessToken = tokenService.refreshToken(refreshToken);
 
         var apiResponse = ApiResponse.success("Token has been updated", accessToken);
