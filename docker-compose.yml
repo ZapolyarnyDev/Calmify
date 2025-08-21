@@ -68,7 +68,6 @@ services:
       JAVA_OPTS: -Xms512m -Xmx1024m -XX:+UseG1GC
       KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
       DISCOVERY_SERVER_ZONE: ${DISCOVERY_SERVER_ZONE}
-      SCHEMA_REGISTRY_URL: ${SCHEMA_REGISTRY_URL}
 
   user-service:
     build:
@@ -97,7 +96,6 @@ services:
       JAVA_OPTS: -Xms512m -Xmx1024m -XX:+UseG1GC
       KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
       DISCOVERY_SERVER_ZONE: ${DISCOVERY_SERVER_ZONE}
-      SCHEMA_REGISTRY_URL: ${SCHEMA_REGISTRY_URL}
 
   auth-database:
     image: postgres:15
@@ -144,23 +142,6 @@ services:
       - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
       - KAFKA_KRAFT_CLUSTER_ID=3I3sm3POR7O8oczdFPa1UA
       - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_CREATE_TOPICS=_schemas:1:1
-    networks:
-      - kafka-network
-
-  schema-registry:
-    image: confluentinc/cp-schema-registry:latest
-    container_name: schema-registry
-    depends_on:
-      - kafka-server-1
-    ports:
-      - "8122:8122"
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-server-1:9092
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8122
-      SCHEMA_REGISTRY_DEBUG: "false"
-      SCHEMA_REGISTRY_COMPATIBILITY_LEVEL: "BACKWARD"
     networks:
       - kafka-network
 

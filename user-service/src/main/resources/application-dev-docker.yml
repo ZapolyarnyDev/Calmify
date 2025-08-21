@@ -17,16 +17,16 @@ spring:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: all
       retries: 3
     consumer:
       group-id: auth-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-    properties:
-      schema.registry.url: ${SCHEMA_REGISTRY_URL}
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "io.github.zapolyarnydev.commons.event.*"
 
 eureka:
   client:

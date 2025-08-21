@@ -1,6 +1,6 @@
 package io.github.zapolyarnydev.userservice.listener;
 
-import io.github.zapolyarnydev.commons.events.UserCreatedEvent;
+import io.github.zapolyarnydev.commons.event.UserCreatedEvent;
 import io.github.zapolyarnydev.commons.exception.EmailAlreadyUsedException;
 import io.github.zapolyarnydev.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +20,14 @@ public class UserEventListener {
     @KafkaListener(topics = "users.created",
     containerFactory = "specificRecordContainerFactory")
     public void onUserCreate(UserCreatedEvent event) {
-        log.info("User creation event received. Email: {}", event.getEmail());
-        var email = event.getEmail();
-        Instant registeredAt = event.getCreatedAt();
+        log.info("User creation event received. Email: {}", event.email());
+        var email = event.email();
+        Instant registeredAt = event.registredAt();
         try {
             userService.createUser(email, registeredAt);
             log.info("User successfully created from event: {}", email);
         } catch (EmailAlreadyUsedException e) {
-            log.warn("Duplicate user creation event for email: {}", event.getEmail());
+            log.warn("Duplicate user creation event for email: {}", event.email());
         } catch (Exception e) {
             log.error("Failed to process event {}, sending to DLT", event, e);
         }

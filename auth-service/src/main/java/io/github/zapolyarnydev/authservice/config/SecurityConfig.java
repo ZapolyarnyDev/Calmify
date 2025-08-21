@@ -22,20 +22,20 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        var checkFiler = new HeaderCheckFilter(headerFilterProvider());
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, HeaderCheckFilter checkFilter) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/v0/auth/**").permitAll()
                                 .anyRequest().authenticated())
-                .addFilterBefore(checkFiler, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(checkFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    private HeaderFilterProvider headerFilterProvider() {
+    @Bean
+    public HeaderFilterProvider headerFilterProvider() {
         return HeaderFilterProvider.builder()
                 .forEndpoints(
                         List.of("/v0/token/refresh"),

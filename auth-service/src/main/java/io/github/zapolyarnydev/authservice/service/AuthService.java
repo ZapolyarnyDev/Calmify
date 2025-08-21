@@ -3,14 +3,13 @@ package io.github.zapolyarnydev.authservice.service;
 import io.github.zapolyarnydev.authservice.entity.AuthUser;
 import io.github.zapolyarnydev.authservice.exception.EmailNotFoundException;
 import io.github.zapolyarnydev.authservice.exception.InvalidCredentialsException;
+import io.github.zapolyarnydev.commons.event.UserCreatedEvent;
 import io.github.zapolyarnydev.commons.exception.UserNotFoundException;
 import io.github.zapolyarnydev.authservice.repository.AuthUserRepository;
-import io.github.zapolyarnydev.commons.events.UserCreatedEvent;
 import io.github.zapolyarnydev.commons.exception.EmailAlreadyUsedException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.avro.specific.SpecificRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final KafkaTemplate<String, SpecificRecord> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Transactional
     public AuthUser register(String email, String password) {

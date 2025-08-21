@@ -12,6 +12,8 @@ public interface UserMapper {
             @Mapping(source = "displayName", target = "displayName"),
             @Mapping(source = "handle", target = "handle"),
             @Mapping(source = "description", target = "description"),
+            @Mapping(target = "showActivity", ignore = true),
+            @Mapping(target = "lastSeenAt", ignore = true)
     })
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateUserFromRequest(UpdateUserRequestDTO updateUserRequestDTO, @MappingTarget UserEntity userEntity);
