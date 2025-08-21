@@ -6,11 +6,10 @@ plugins {
 }
 
 group = "io.github.zapolyarnydev"
-version = "0.2.0"
+version = "0.3.0"
 
 repositories {
     mavenCentral()
-    maven ( url = "https://packages.confluent.io/maven/")
 }
 
 dependencies {
@@ -19,13 +18,10 @@ dependencies {
 
     implementation(project(":calmify-commons"))
 
-    implementation("io.confluent:kafka-avro-serializer:8.0.0")
-
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
 
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.apache.avro:avro:1.11.4")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
 
@@ -35,6 +31,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     runtimeOnly("org.postgresql:postgresql")
 }
 
