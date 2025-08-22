@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.commons.event;
+package io.github.zapolyarnydev.commons.event.user;
 
 import java.time.Instant;
 
