@@ -1,6 +1,6 @@
 package io.github.zapolyarnydev.userservice.listener;
 
-import io.github.zapolyarnydev.commons.event.UserCreatedEvent;
+import io.github.zapolyarnydev.commons.event.user.UserCreatedEvent;
 import io.github.zapolyarnydev.commons.exception.EmailAlreadyUsedException;
 import io.github.zapolyarnydev.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;

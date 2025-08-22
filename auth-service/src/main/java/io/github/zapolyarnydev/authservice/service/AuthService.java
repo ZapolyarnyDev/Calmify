@@ -3,7 +3,7 @@ package io.github.zapolyarnydev.authservice.service;
 import io.github.zapolyarnydev.authservice.entity.AuthUser;
 import io.github.zapolyarnydev.authservice.exception.EmailNotFoundException;
 import io.github.zapolyarnydev.authservice.exception.InvalidCredentialsException;
-import io.github.zapolyarnydev.commons.event.UserCreatedEvent;
+import io.github.zapolyarnydev.commons.event.user.UserCreatedEvent;
 import io.github.zapolyarnydev.commons.exception.UserNotFoundException;
 import io.github.zapolyarnydev.authservice.repository.AuthUserRepository;
 import io.github.zapolyarnydev.commons.exception.EmailAlreadyUsedException;
