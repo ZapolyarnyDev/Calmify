@@ -21,6 +21,13 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v0/user/**
+          filters:
+            - StripPrefix=1
+
 server:
   port: 8095
 
