@@ -34,10 +34,3 @@ eureka:
       defaultZone: ${DISCOVERY_SERVER_ZONE}
     fetch-registry: false
     register-with-eureka: true
-
-security:
-  jwt:
-    private-key-base64: ${JWT_PRIVATE_KEY_BASE64}
-    public-key-base64: ${JWT_PUBLIC_KEY_BASE64}
-    access-token-expiration-minutes: 15
-    refresh-token-expiration-days: 7
