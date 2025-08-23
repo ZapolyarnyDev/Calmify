@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: video-service
+  profiles:
+    active: ${SPRING_ACTIVE_PROFILE:dev}

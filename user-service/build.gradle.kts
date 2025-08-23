@@ -18,14 +18,14 @@ dependencies {
 
     implementation(project(":calmify-commons"))
 
-    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+    compileOnly("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
 
     implementation("org.springframework.kafka:spring-kafka")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
 
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    compileOnly("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")

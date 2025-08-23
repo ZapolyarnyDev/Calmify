@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.zapolyarnydev"
-version = "0.2.0"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
@@ -23,20 +23,16 @@ dependencies {
 
     implementation("org.springframework.kafka:spring-kafka")
 
+    implementation("org.springframework.boot:spring-boot-starter-security")
+
+    compileOnly("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     runtimeOnly("org.postgresql:postgresql")
-
-    implementation("org.springframework.boot:spring-boot-starter-security")
-
-    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-    testImplementation("io.github.cdimascio:dotenv-java:3.2.0")
 }
 
 extra["springCloudVersion"] = "2024.0.0"
@@ -50,7 +46,6 @@ dependencyManagement {
 tasks.bootJar {
     archiveFileName.set("app.jar")
 }
-
 
 tasks.test {
     useJUnitPlatform()
