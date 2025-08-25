@@ -10,9 +10,13 @@ import io.github.zapolyarnydev.videoservice.mapper.VideoMetadataMapper;
 import io.github.zapolyarnydev.videoservice.repository.VideoMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -47,6 +51,11 @@ public class VideoMetadataService {
     public VideoMetadataEntity findByShortId(String shortId) {
         return metadataRepository.findByShortId(shortId)
                 .orElseThrow(() -> new VideoMetadataNotFoundByShortIdException(shortId));
+    }
+
+    public List<VideoMetadataEntity> getVideosByAuthor(UUID authorId, int limit) {
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("uploadedAt"));
+        return metadataRepository.findByAuthorId(authorId, pageable).getContent();
     }
 
     @Transactional

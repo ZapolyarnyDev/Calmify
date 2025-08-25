@@ -22,6 +22,9 @@ public class VideoMetadataEntity {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
+    @Column(name = "author_id", nullable = false, updatable = false)
+    private UUID authorId;
+
     @Column(unique = true, nullable = false, updatable = false)
     private String shortId;
 
