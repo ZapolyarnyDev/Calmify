@@ -18,7 +18,6 @@ import java.util.List;
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
-@Slf4j
 public class SecurityConfig {
 
     @Bean
@@ -27,8 +26,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/v0/auth/**").permitAll()
-                                .anyRequest().authenticated())
+                        auth.anyRequest().permitAll())
                 .addFilterBefore(checkFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
