@@ -10,7 +10,6 @@ public record CreateVideoMetadataDTO(
         @Length(max = 50, message ="Video title can be up to 50 characters long")
         String title,
         @Length(max = 700, message ="Video description can be up to 700 characters long")
-        String description,
-        Instant uploadedAt
+        String description
 ) {
 }

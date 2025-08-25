@@ -37,7 +37,8 @@ public class VideoMetadataEntity {
     private Instant uploadedAt;
 
     @Builder
-    public VideoMetadataEntity(Supplier<String> shortIdGenerator, String title, String description, Instant uploadedAt) {
+    public VideoMetadataEntity(Supplier<String> shortIdGenerator, UUID authorId, String title, String description, Instant uploadedAt) {
+        this.authorId = authorId;
         this.title = title;
         this.description = description;
         this.uploadedAt = uploadedAt;
