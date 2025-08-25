@@ -1,6 +1,7 @@
 package io.github.zapolyarnydev.videoservice.mapper;
 
 import io.github.zapolyarnydev.videoservice.dto.UpdateVideoMetadataDTO;
+import io.github.zapolyarnydev.videoservice.dto.VideoMetadataInfo;
 import io.github.zapolyarnydev.videoservice.entity.VideoMetadataEntity;
 import org.mapstruct.*;
 
@@ -13,4 +14,11 @@ public interface VideoMetadataMapper {
     })
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateVideoMetadata(UpdateVideoMetadataDTO updateDTO, @MappingTarget VideoMetadataEntity entity);
+
+    @Mappings({
+            @Mapping(source = "title", target = "title"),
+            @Mapping(source = "description", target = "description"),
+            @Mapping(source = "uploadedAt", target = "uploadedAt")
+    })
+    VideoMetadataInfo toInfo(VideoMetadataEntity entity);
 }

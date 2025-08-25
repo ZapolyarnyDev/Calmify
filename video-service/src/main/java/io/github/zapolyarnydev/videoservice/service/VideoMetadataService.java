@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,11 +32,12 @@ public class VideoMetadataService {
     private final VideoMetadataMapper metadataMapper;
 
     @Transactional
-    public VideoMetadataEntity createVideoMetadata(CreateVideoMetadataDTO metadataDTO) {
+    public VideoMetadataEntity createVideoMetadata(CreateVideoMetadataDTO metadataDTO, UUID authorId) {
         var entity = VideoMetadataEntity.builder()
+                .authorId(authorId)
                 .title(metadataDTO.title())
                 .description(metadataDTO.description())
-                .uploadedAt(metadataDTO.uploadedAt())
+                .uploadedAt(Instant.now())
                 .shortIdGenerator(shortIdGenerator)
                 .build();
 
@@ -59,11 +61,11 @@ public class VideoMetadataService {
     }
 
     @Transactional
-    public void updateVideoMetadata(UpdateVideoMetadataDTO updateDTO) {
-        var entity = findById(updateDTO.id());
+    public void updateVideoMetadata(String shortId, UpdateVideoMetadataDTO updateDTO) {
+        var entity = findByShortId(shortId);
         metadataMapper.updateVideoMetadata(updateDTO, entity);
         metadataRepository.save(entity);
-        log.info("Video with id {} has been updated", updateDTO.id());
+        log.info("Video with id {} has been updated", shortId);
     }
 
 
@@ -72,5 +74,12 @@ public class VideoMetadataService {
         var entity = findById(id);
         metadataRepository.delete(entity);
         log.info("Video with id {} has been deleted", id);
+    }
+
+    @Transactional
+    public void removeVideoMetadata(String shortId) {
+        var entity = findByShortId(shortId);
+        metadataRepository.delete(entity);
+        log.info("Video with short id {} has been deleted", shortId);
     }
 }
