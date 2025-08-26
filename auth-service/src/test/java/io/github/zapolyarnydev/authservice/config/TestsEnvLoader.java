@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.config;
+package io.github.zapolyarnydev.authservice.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

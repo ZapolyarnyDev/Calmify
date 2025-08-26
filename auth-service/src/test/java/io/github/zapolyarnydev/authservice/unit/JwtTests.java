@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.unit;
+package io.github.zapolyarnydev.authservice.unit;
 
 import io.github.zapolyarnydev.authservice.AuthServiceApplication;
 import io.github.zapolyarnydev.authservice.entity.AuthRole;
@@ -6,8 +6,8 @@ import io.github.zapolyarnydev.authservice.entity.AuthUser;
 import io.github.zapolyarnydev.authservice.repository.AuthUserRepository;
 import io.github.zapolyarnydev.authservice.security.jwt.JwtUtil;
 import io.github.zapolyarnydev.authservice.security.jwt.validation.JwtValidationStatus;
-import io.github.zapolyarnydev.config.TestsEnvLoader;
-import io.github.zapolyarnydev.unit.config.JwtTestsConfiguration;
+import io.github.zapolyarnydev.authservice.config.TestsEnvLoader;
+import io.github.zapolyarnydev.authservice.unit.config.JwtTestsConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;

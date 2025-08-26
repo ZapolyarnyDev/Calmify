@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.unit.config;
+package io.github.zapolyarnydev.authservice.unit.config;
 
 import io.github.zapolyarnydev.authservice.repository.AuthUserRepository;
 import org.mockito.Mockito;
