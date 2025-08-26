@@ -1,0 +1,31 @@
+package io.github.zapolyarnydev.engagement.entity;
+
+import io.github.zapolyarnydev.engagement.domain.EngagementTarget;
+import io.github.zapolyarnydev.engagement.domain.type.TargetType;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "engagement_target")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class EngagementVideoEntity implements EngagementTarget<UUID, UUID> {
+
+    @Id
+    @GeneratedValue
+    @Column(nullable = false, updatable = false)
+    private UUID id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    private UUID targetId;
+
+    @Override
+    public TargetType getTargetType() {
+        return TargetType.VIDEO;
+    }
+}
