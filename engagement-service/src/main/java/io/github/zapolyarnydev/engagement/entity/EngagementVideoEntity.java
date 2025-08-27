@@ -1,6 +1,7 @@
 package io.github.zapolyarnydev.engagement.entity;
 
-import io.github.zapolyarnydev.engagement.domain.EngagementTarget;
+import io.github.zapolyarnydev.engagement.domain.Engagement;
+import io.github.zapolyarnydev.engagement.domain.Target;
 import io.github.zapolyarnydev.engagement.domain.type.TargetType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EngagementVideoEntity implements EngagementTarget<UUID, UUID> {
+public class EngagementVideoEntity implements Engagement<UUID, UUID>, Target {
 
     @Id
     @GeneratedValue

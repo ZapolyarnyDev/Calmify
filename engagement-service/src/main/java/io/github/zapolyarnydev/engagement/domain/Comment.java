@@ -10,7 +10,7 @@ import java.time.Instant;
  * @param <T> The type of target ID
  * @param <A> The type of author id
  * */
-public interface Comment<I, T, A> extends EngagementTarget<I, T>, Authorship<A>, TemporalInfo<Instant> {
+public interface Comment<I, T, A> extends Engagement<I, T>, Target, Authorship<A>, TemporalInfo<Instant> {
 
     String getText();
 
