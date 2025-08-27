@@ -8,7 +8,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "engagement_target")
+@Table(name = "engagement_video")
 @Getter
 @Setter
 @NoArgsConstructor
