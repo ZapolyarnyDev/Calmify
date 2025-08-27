@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.zapolyarnydev.authservice.entity.AuthUser;
 import io.github.zapolyarnydev.authservice.repository.AuthUserRepository;
 import io.github.zapolyarnydev.commons.api.ApiResponse;
+import io.github.zapolyarnydev.commons.api.ApiStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -32,7 +33,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -85,7 +85,6 @@ public class RegistrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("SUCCESS"))
                 .andReturn();
 
         ApiResponse<String> response = objectMapper.readValue(
@@ -94,7 +93,7 @@ public class RegistrationTest {
         );
 
         assertThat(response).isNotNull();
-        assertThat(response.status()).isEqualTo("SUCCESS");
+        assertThat(response.status()).isEqualTo(ApiStatus.SUCCESS);
         assertThat(response.data()).isNotEmpty();
 
         assertThat(authUserRepository.existsByEmail(email)).isTrue();

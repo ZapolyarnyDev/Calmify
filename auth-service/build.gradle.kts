@@ -35,8 +35,12 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-
+    testImplementation("org.springframework.kafka:spring-kafka-test")
     testImplementation("io.github.cdimascio:dotenv-java:3.2.0")
+
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:kafka")
 }
 
 extra["springCloudVersion"] = "2024.0.0"
