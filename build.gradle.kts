@@ -26,6 +26,18 @@ configure(listOf(project(":auth-service"))) {
             includeTags("unit")
         }
     }
+
+    tasks.register<Test>("integrationTest") {
+        description = "Runs integration tests"
+        group = "verification"
+
+        testClassesDirs = sourceSets.test.get().output.classesDirs
+        classpath = sourceSets.test.get().runtimeClasspath
+
+        useJUnitPlatform {
+            includeTags("integration")
+        }
+    }
 }
 
 tasks.register("unitTestAll") {
