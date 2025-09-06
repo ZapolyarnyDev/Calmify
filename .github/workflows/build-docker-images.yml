@@ -43,7 +43,16 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build project
-        run: ./gradlew clean build -x test
+        run: |
+          SERVICES="${{ github.event.inputs.service }}"
+          if [ "$SERVICES" = "all" ]; then
+            SERVICES="discovery-server api-gateway auth-service user-service"
+          fi
+
+          for SERVICE in $SERVICES; do
+            echo "🛠 Building $SERVICE module..."
+            ./gradlew ":$SERVICE:build" -x test
+          done
 
       - name: Set version
         id: vars
