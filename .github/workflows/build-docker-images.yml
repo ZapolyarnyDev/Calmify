@@ -1,0 +1,80 @@
+name: Building and deploying Docker images of microservices
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      service:
+        description: "Building service name (e.g.: auth-service, user-service, discovery-server, all)"
+        required: true
+        default: "all"
+      version:
+        description: "Image version (latest by default)"
+        required: false
+        default: "latest"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build project
+        run: ./gradlew clean build -x test
+
+      - name: Set version
+        id: vars
+        run: echo "VERSION=${{ github.event.inputs.version || 'latest' }}" >> $GITHUB_ENV
+
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & push Docker images
+        run: |
+          declare -A PORTS=( 
+            ["discovery-server"]=8761 
+            ["api-gateway"]=8095 
+            ["auth-service"]=8096 
+            ["user-service"]=8097 
+          )
+          
+          SERVICES="${{ github.event.inputs.service }}"
+          if [ "$SERVICES" = "all" ]; then
+            SERVICES="discovery-server api-gateway auth-service user-service"
+          fi
+          
+          for SERVICE in $SERVICES; do
+            EXPOSE_PORT=${PORTS[$SERVICE]}
+            echo "📦 Building $SERVICE on port $EXPOSE_PORT..."
+            docker build \
+              --build-arg SERVICE_MODULE=$SERVICE \
+              --build-arg EXPOSE_PORT=$EXPOSE_PORT \
+              -t ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE:${VERSION} \
+              -t ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE:${{ github.sha }} \
+              .
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE:${VERSION}
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE:${{ github.sha }}
+          done
