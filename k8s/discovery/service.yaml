@@ -8,5 +8,5 @@ spec:
     app: discovery-server
   ports:
     - port: 8761
-      targetPort: 8761
+      targetPort: 8080
   type: ClusterIP
