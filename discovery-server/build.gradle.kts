@@ -15,8 +15,7 @@ repositories {
 dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-server")
 
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
 
 extra["springCloudVersion"] = "2024.0.0"
