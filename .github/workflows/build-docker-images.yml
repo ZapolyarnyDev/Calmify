@@ -70,20 +70,13 @@ jobs:
 
       - name: Build & push Docker images
         run: |
-          declare -A PORTS=( 
-            ["discovery-server"]=8761 
-            ["api-gateway"]=8095 
-            ["auth-service"]=8096 
-            ["user-service"]=8097 
-          )
-          
           SERVICES="${{ github.event.inputs.service }}"
           if [ -z "$SERVICES" ] || [ "$SERVICES" = "all" ]; then
             SERVICES="discovery-server api-gateway auth-service user-service"
           fi
           
           for SERVICE in $SERVICES; do
-            EXPOSE_PORT=${PORTS[$SERVICE]}
+            EXPOSE_PORT=8080
             echo "📦 Building $SERVICE on port $EXPOSE_PORT..."
             docker build \
               --build-arg SERVICE_MODULE=$SERVICE \
