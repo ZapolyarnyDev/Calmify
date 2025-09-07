@@ -45,7 +45,7 @@ jobs:
       - name: Build project
         run: |
           SERVICES="${{ github.event.inputs.service }}"
-          if [ "$SERVICES" = "all" ]; then
+          if [ -z "$SERVICES" ] || [ "$SERVICES" = "all" ]; then
             SERVICES="discovery-server api-gateway auth-service user-service"
           fi
 
@@ -55,8 +55,12 @@ jobs:
           done
 
       - name: Set version
-        id: vars
-        run: echo "VERSION=${{ github.event.inputs.version || 'latest' }}" >> $GITHUB_ENV
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION="latest"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Docker login
         uses: docker/login-action@v3
@@ -74,7 +78,7 @@ jobs:
           )
           
           SERVICES="${{ github.event.inputs.service }}"
-          if [ "$SERVICES" = "all" ]; then
+          if [ -z "$SERVICES" ] || [ "$SERVICES" = "all" ]; then
             SERVICES="discovery-server api-gateway auth-service user-service"
           fi
           
