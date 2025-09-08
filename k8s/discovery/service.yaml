@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: discovery-server
   namespace: calmify
+  labels:
+    app: discovery-server
+    tier: backend
 spec:
   selector:
     app: discovery-server
