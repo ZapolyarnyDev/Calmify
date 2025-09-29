@@ -27,6 +27,8 @@ spec:
               value: "deployment"
             - name: JAVA_OPTS
               value: "-Xms512m -Xmx1024m -XX:+UseG1GC"
+            - name: DISCOVERY_SERVER_ZONE
+              value: "http://discovery-server.calmify.svc.cluster.local:8761/eureka"
           readinessProbe:
             httpGet:
               path: /actuator/health

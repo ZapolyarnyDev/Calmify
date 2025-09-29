@@ -5,6 +5,8 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
+    service-url:
+      defaultZone: ${DISCOVERY_SERVER_ZONE}
   server:
     enable-self-preservation: false
   instance:
