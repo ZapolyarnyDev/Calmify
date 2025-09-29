@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+  namespace: calmify
+data:
+  DISCOVERY_SERVER_ZONE: "http://discovery-server.calmify.svc.cluster.local:8761/eureka"

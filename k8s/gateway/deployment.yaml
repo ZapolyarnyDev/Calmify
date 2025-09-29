@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: calmify
+  labels:
+    app: api-gateway
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        tier: backend
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: zapolyarny/api-gateway:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "deployment"
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx1024m -XX:+UseG1GC"
+            - name: DISCOVERY_SERVER_ZONE
+              valueFrom:
+                  configMapKeyRef:
+                    name: api-gateway-config
+                    key: DISCOVERY_SERVER_ZONE
+            - name: JWT_PUBLIC_KEY_BASE64
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-public-key
+                  key: JWT_PUBLIC_KEY_BASE64
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
